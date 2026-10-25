@@ -1,0 +1,13 @@
+.env
+.env.*
+/vendor
+/.git
+/.vercel
+/node_modules
+/.claude
+/graphify-out
+/CLAUDE.md
+/storage/logs/*
+/storage/framework/sessions/*
+/storage/framework/cache/data/*
+/storage/framework/views/*
