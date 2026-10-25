@@ -354,7 +354,7 @@ function loadTemplate(f) {
   img.src = url;
 }
 
-// ---------- Finished sample: let Claude read the name style ----------
+// ---------- Finished sample: match the name style ----------
 function loadReference(f) {
   if (!/^image\/(png|jpeg|webp)$/.test(f.type)) {
     $("matchStatus").textContent = "That file isn't a PNG or JPG. Download the finished certificate from Canva as PNG.";
@@ -382,58 +382,164 @@ function setControl(id, key, value, fmt) {
   if (out && fmt) out.textContent = fmt(value);
 }
 
+// Works without Claude: the finished sample and the blank template are the
+// same design, so the pixels that differ are the name. Their bounding box
+// gives position and width, their color gives the text color, and drawing
+// the name in every font and comparing shapes picks the font.
+// Analysis width in pixels: near full size, so stroke weight (normal or bold)
+// still shows, but capped so huge exports stay quick.
+const MATCH_MAX_W = 1800;
+
+function pixelsAt(img, w, h) {
+  const c = document.createElement("canvas");
+  c.width = w; c.height = h;
+  const g = c.getContext("2d", { willReadFrequently: true });
+  g.imageSmoothingQuality = "high";
+  g.drawImage(img, 0, 0, w, h);
+  return g.getImageData(0, 0, w, h).data;
+}
+
+// Longest run of indexes whose count is above zero, allowing small gaps.
+function densestRun(counts, maxGap) {
+  let best = null, start = -1, last = -1, sum = 0;
+  const close = () => { if (start >= 0 && (!best || sum > best.sum)) best = { from: start, to: last, sum }; };
+  counts.forEach((n, i) => {
+    if (!n) return;
+    if (start < 0 || i - last > maxGap) { close(); start = i; sum = 0; }
+    last = i; sum += n;
+  });
+  close();
+  return best;
+}
+
+// Where the name is on the sample, as a box in analysis pixels, plus its color.
+function findName(tpl, ref, w, h) {
+  const diff = new Float32Array(w * h);
+  for (let i = 0, p = 0; i < diff.length; i++, p += 4)
+    diff[i] = Math.abs(ref[p] - tpl[p]) + Math.abs(ref[p + 1] - tpl[p + 1]) + Math.abs(ref[p + 2] - tpl[p + 2]);
+  const on = i => diff[i] > 90;   // ignores JPEG noise and slight export differences
+
+  const rows = new Array(h).fill(0);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (on(y * w + x)) rows[y]++;
+  // A row needs a few changed pixels to count, so stray noise doesn't join the band.
+  const band = densestRun(rows.map(n => (n > 2 ? n : 0)), Math.round(h * 0.02));
+  if (!band || band.sum < 40) return null;
+
+  const cols = new Array(w).fill(0);
+  for (let y = band.from; y <= band.to; y++) for (let x = 0; x < w; x++) if (on(y * w + x)) cols[x]++;
+  const span = densestRun(cols, Math.round(w * 0.06));   // spaces between words stay inside
+  let top = band.to, bottom = band.from;
+  for (let y = band.from; y <= band.to; y++)
+    for (let x = span.from; x <= span.to; x++) if (on(y * w + x)) { top = Math.min(top, y); bottom = Math.max(bottom, y); }
+
+  const strong = [];
+  for (let y = top; y <= bottom; y++) for (let x = span.from; x <= span.to; x++) if (on(y * w + x)) strong.push(y * w + x);
+  // Color: the most-changed pixels are the solid middle of the letters, not
+  // the anti-aliased edges that blend with the background.
+  strong.sort((a, b) => diff[b] - diff[a]);
+  const core = strong.slice(0, Math.max(1, Math.round(strong.length * 0.15)));
+  const median = k => { const v = core.map(i => ref[i * 4 + k]).sort((a, b) => a - b); return v[v.length >> 1]; };
+  const color = "#" + [0, 1, 2].map(k => median(k).toString(16).padStart(2, "0")).join("");
+
+  // How much of each pixel the name's ink covers (0-1): solid letter pixels
+  // change the most, anti-aliased edges proportionally less.
+  const solid = diff[core[core.length >> 1]];
+  const cover = new Float32Array(w * h);
+  for (const i of strong) cover[i] = Math.min(1, diff[i] / solid);
+
+  return { left: span.from, right: span.to + 1, top, bottom: bottom + 1, cover, color };
+}
+
+// How closely `text` in this font covers the same pixels as the name, from 0
+// to 1 (overlapping ink divided by all ink, counting partly covered pixels).
+function shapeScore(found, w, h, text, font, italic, bold, g) {
+  const boxW = found.right - found.left, boxH = found.bottom - found.top;
+  const family = `"${font[0]}", ${font[1] === "script" ? "cursive" : font[1]}`;
+  g.textAlign = "center"; g.textBaseline = "middle";
+  g.font = `${italic} ${bold} 100px ${family}`;
+  let m = g.measureText(text);
+  const inkW = m.actualBoundingBoxLeft + m.actualBoundingBoxRight;
+  if (!inkW) return null;
+  const px = 100 * boxW / inkW;
+  g.font = `${italic} ${bold} ${px}px ${family}`;
+  m = g.measureText(text);
+  // Line the drawn ink up with the found box.
+  const x = found.left + m.actualBoundingBoxLeft, y = found.top + m.actualBoundingBoxAscent;
+  g.clearRect(0, 0, w, h);
+  g.fillStyle = "#000";
+  g.fillText(text, x, y);
+  const pad = Math.round(boxH * 0.5);
+  const x0 = Math.max(0, found.left - pad), y0 = Math.max(0, found.top - pad);
+  const x1 = Math.min(w, found.right + pad), y1 = Math.min(h, found.bottom + pad);
+  const img = g.getImageData(x0, y0, x1 - x0, y1 - y0).data;
+  let both = 0, either = 0;
+  for (let yy = y0, p = 3; yy < y1; yy++)
+    for (let xx = x0; xx < x1; xx++, p += 4) {
+      const a = img[p] / 255, b = found.cover[yy * w + xx];
+      both += Math.min(a, b); either += Math.max(a, b);
+    }
+  return { score: either ? both / either : 0, px, x, y, advance: m.width };
+}
+
 async function matchStyle() {
   const btn = $("matchBtn"), out = $("matchStatus");
-  const sample = await claude.use("sample");
-  if (!sample) { out.textContent = "Style matching isn't available in this view. Open this page in claude.ai, or set the style by hand below."; return; }
+  if (!template || usingSample) { out.textContent = "Upload your blank template in step 1 first. The match compares it with this finished sample."; return; }
   btn.disabled = true;
-  out.textContent = "Claude is looking at your sample… this can take up to a minute.";
-  const fontList = FONTS.map(f => `${f[0]} (${f[1]})`).join(", ");
-  const prompt = `The image is a finished certificate made in Canva. It contains one personalized attendee name (usually the largest text, often after a line like "presented to"). Measure how that name is drawn.
-
-Reply with only a JSON object, no other text:
-{"name": string (the name as written),
- "centerX": number (horizontal center of the name, percent of image width, 0-100),
- "centerY": number (vertical center of the name's letters, percent of image height, 0-100),
- "capHeight": number (height of a capital letter in the name, percent of image height),
- "widthPct": number (width of the whole name, percent of image width),
- "color": string (main text color of the name as #rrggbb),
- "font": string (the closest match from this list, exact name only: ${fontList}),
- "bold": boolean,
- "italic": boolean (true if the name is slanted italic; script fonts that are naturally slanted count as false),
- "uppercase": boolean (true if the name is written in all capitals)}
-
-Example: {"name":"Maria Santos","centerX":50,"centerY":52.5,"capHeight":5.2,"widthPct":38,"color":"#1f3a5f","font":"Great Vibes","bold":false,"italic":false,"uppercase":false}`;
+  out.textContent = "Comparing your sample with the template…";
+  await tick();
   try {
-    const r = await sample.json(prompt, { images: refFile });
-    const num = (v, lo, hi) => { const n = Number(v); return isFinite(n) ? Math.min(hi, Math.max(lo, n)) : null; };
-    const x = num(r.centerX, 0, 100), y = num(r.centerY, 0, 100), cap = num(r.capHeight, 0.5, 20), wp = num(r.widthPct, 5, 95);
-    if (x == null || y == null) throw { code: "invalid_json" };
-    setControl("posX", "posX", x, v => `(${v.toFixed(1)}%)`);
-    setControl("posY", "posY", y, v => `(${v.toFixed(1)}%)`);
-    const fontEntry = FONTS.find(f => f[0].toLowerCase() === String(r.font || "").toLowerCase());
-    if (fontEntry) setControl("font", "font", fontEntry[0]);
-    if (cap != null) {
-      // Capital letters are roughly 0.7 of the font size (script faces a little less).
-      const ratio = fontEntry && fontEntry[1] === "script" ? 0.6 : 0.7;
-      setControl("size", "size", Math.min(20, Math.max(2, +(cap / ratio).toFixed(1))), v => `(${v.toFixed(1)}% of height)`);
+    // Compare at the smaller image's size: enlarging one would blur its
+    // edges, and blurred borders and titles would look like changed pixels.
+    const w = Math.min(MATCH_MAX_W, template.width, refImg.width), h = Math.round(w * template.height / template.width);
+    const found = findName(pixelsAt(template, w, h), pixelsAt(refImg, w, h), w, h);
+    if (!found) { out.textContent = "No name found: the sample looks the same as the blank template. Make sure the sample has a name on it and both come from the same Canva design."; return; }
+
+    const text = $("refName").value.replace(/\s+/g, " ").trim();
+    setControl("color", "color", found.color);
+    let best = null;
+    if (text) {
+      out.textContent = "Found the name. Trying each font…";
+      await Promise.all(FONTS.flatMap(f => ["normal", "italic"].flatMap(it => ["normal", "bold"].map(b =>
+        document.fonts.load(`${it} ${b} 40px "${f[0]}"`, text).catch(() => {})))));
+      const c = document.createElement("canvas");
+      c.width = w; c.height = h;
+      const g = c.getContext("2d", { willReadFrequently: true });
+      const upper = text.toLocaleUpperCase();
+      const variants = text === upper ? [["upper", upper]] : [["asis", text], ["upper", upper]];
+      for (const font of FONTS) for (const italic of ["normal", "italic"]) for (const bold of ["normal", "bold"]) for (const [caseMode, t] of variants) {
+        const r = shapeScore(found, w, h, t, font, italic, bold, g);
+        if (r && (!best || r.score > best.score)) best = { ...r, font, italic, bold, caseMode };
+      }
+      await tick();
     }
-    if (wp != null) setControl("maxW", "maxW", Math.round(Math.min(95, Math.max(settings.maxW, wp * 1.4))), v => `(${v}%)`);
-    if (/^#[0-9a-f]{6}$/i.test(r.color || "")) setControl("color", "color", r.color.toLowerCase());
-    setControl("bold", "bold", r.bold ? "bold" : "normal");
-    setControl("italic", "italic", r.italic ? "italic" : "normal");
-    if (r.uppercase) setControl("caseMode", "caseMode", "upper");
+
+    if (best) {
+      setControl("font", "font", best.font[0]);
+      setControl("bold", "bold", best.bold);
+      setControl("italic", "italic", best.italic);
+      setControl("caseMode", "caseMode", best.caseMode === "upper" ? "upper" : "asis");
+      setControl("size", "size", Math.min(20, Math.max(2, +(best.px / h * 100).toFixed(1))), v => `(${v.toFixed(1)}% of height)`);
+      setControl("posX", "posX", best.x / w * 100, v => `(${v.toFixed(1)}%)`);
+      setControl("posY", "posY", best.y / h * 100, v => `(${v.toFixed(1)}%)`);
+      // Room for longer names than the sample's before they shrink to fit.
+      setControl("maxW", "maxW", Math.round(Math.min(95, Math.max(settings.maxW, best.advance / w * 140))), v => `(${v}%)`);
+    } else {
+      // Without the name's text only the box is known: centre on it and size
+      // from its height (letters with tails make the box about 1.3 × the size).
+      const boxH = (found.bottom - found.top) / h * 100;
+      setControl("posX", "posX", (found.left + found.right) / 2 / w * 100, v => `(${v.toFixed(1)}%)`);
+      setControl("posY", "posY", (found.top + found.bottom) / 2 / h * 100, v => `(${v.toFixed(1)}%)`);
+      setControl("size", "size", Math.min(20, Math.max(2, +(boxH / 1.3).toFixed(1))), v => `(${v.toFixed(1)}% of height)`);
+      setControl("maxW", "maxW", Math.round(Math.min(95, Math.max(settings.maxW, (found.right - found.left) / w * 140))), v => `(${v}%)`);
+    }
     saveSettings();
     showRef = false; $("compareBtn").setAttribute("aria-pressed", "false");
     await render();
-    out.textContent = `Matched "${r.name || "the name"}": ${settings.font}, ${settings.color}. Use Compare with sample to check it, and fine-tune below if needed.`;
+    out.textContent = best
+      ? `Matched: ${settings.font}, ${settings.color}. Use Compare with sample to check it, and fine-tune below if needed.`
+      : `Matched the position, size and color (${settings.color}). Type the name shown on the sample above to match the font too.`;
   } catch (e) {
-    const code = e && e.code;
-    if (code === "not_granted" || code === "sampling_disabled") out.textContent = "Claude wasn't allowed to look at the image. You can still set the style by hand below.";
-    else if (code === "rate_limited") out.textContent = "Too many requests right now. Wait a moment and click Match again.";
-    else if (code === "image_rejected") out.textContent = "That image couldn't be read. Try a smaller PNG export.";
-    else if (code === "cancelled") out.textContent = "";
-    else out.textContent = "Claude couldn't measure the name this time. Click Match again, or set the style by hand.";
+    out.textContent = "The sample couldn't be compared. Set the style by hand below.";
   } finally {
     btn.disabled = false;
   }

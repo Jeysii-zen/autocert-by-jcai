@@ -100,13 +100,17 @@
 
       <section class="step">
         <h2><span class="n">✦</span>Finished sample <span class="opt">optional</span></h2>
-        <p class="hint">Upload one finished certificate that already has a name on it. Claude looks at it and matches the font, size, color and position for you.</p>
+        <p class="hint">Upload one finished certificate that already has a name on it, from the same Canva design as your blank template. Autocert compares the two and matches the font, size, color and position for you.</p>
         <label class="drop" id="refDrop">
           <input type="file" id="refFile" accept="image/png,image/jpeg,image/webp">
           <strong id="refTitle">Upload a sample with a name</strong>
           <span class="hint">PNG or JPG downloaded from Canva</span>
         </label>
         <img id="refThumb" class="thumb" alt="Your finished sample certificate" hidden>
+        <div class="field">
+          <label for="refName">Name on the sample (to match the font)</label>
+          <input type="text" id="refName" placeholder="e.g. Maria Santos" autocomplete="off" maxlength="120">
+        </div>
         <div class="row">
           <button class="primary" id="matchBtn" disabled>Match the name style</button>
           <button id="compareBtn" disabled aria-pressed="false">Compare with sample</button>
@@ -319,7 +323,7 @@ IT 31</textarea>
           Instagram<span class="sr-only"> (opens in a new tab)</span></a></li>
       </ul>
     </div>
-    <p class="foot-note">© 2026 JCAI · Autocert. Certificates are made in your browser. Your template and names leave it only when you use Match the name style.</p>
+    <p class="foot-note">© 2026 JCAI · Autocert. Certificates are made in your browser. Your template and names never leave it unless you send emails.</p>
   </div>
 </footer>
 

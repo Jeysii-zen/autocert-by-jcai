@@ -2,8 +2,6 @@
 // When you open index.html directly (or host it yourself), this provides the
 // same `claude.use()` call so the download buttons still work.
 //  - "downloads": saves files with a normal browser download.
-//  - "sample" (Match the name style): needs Claude, so it is unavailable here
-//    and the page shows a message instead.
 (function () {
   if (window.claude && typeof window.claude.use === "function") return;
   const downloads = {

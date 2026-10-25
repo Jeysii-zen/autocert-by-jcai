@@ -65,4 +65,4 @@ Run the tests with `php artisan test`.
 ## Notes
 
 - Run it on your own computer. Anyone who can open the page can send email from your account, so don't put it on a public server without adding a login.
-- **Match the name style** needs Claude and only works in the claude.ai version. Here you set the style by hand.
+- **Match the name style** compares your finished sample with the blank template in the browser, so both must come from the same Canva design. Type the name shown on the sample to match the font as well as the position, size and color.
