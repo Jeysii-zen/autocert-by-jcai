@@ -58,6 +58,7 @@ Gmail allows about 500 emails a day (2,000 on Google Workspace). The app caps se
 | Page markup | `resources/views/app.blade.php` |
 | Page styling | `public/css/styles.css` (colors and fonts are the tokens at the top) |
 | Page behavior | `public/js/app.js` (sending is under `Sending through the Laravel app`) |
+| Font list | `public/js/fonts.js` |
 | Tests | `tests/Feature/CertificateEmailTest.php` |
 
 Run the tests with `php artisan test`.
@@ -65,4 +66,4 @@ Run the tests with `php artisan test`.
 ## Notes
 
 - Run it on your own computer. Anyone who can open the page can send email from your account, so don't put it on a public server without adding a login.
-- **Fonts:** about 240 Google Fonts that Canva also offers. Each one downloads only when you pick it (the font list shows names in their own font as you scroll). Canva's own Pro fonts aren't free to use elsewhere, so they aren't included.
+- **Fonts:** all of Google Fonts with Latin letters, about 1,900 families (the list is in `public/js/fonts.js`). Each one downloads only when you pick it, and the font list shows names in their own font as you scroll. Canva's own Pro fonts aren't free to use elsewhere, so they aren't included.
