@@ -16,6 +16,14 @@
       "dest": "/api/index.php"
     },
     {
+      "src": "^/(css|js|img)/(.*)$",
+      "dest": "/public/$1/$2"
+    },
+    {
+      "src": "^/(favicon\\.ico|robots\\.txt)$",
+      "dest": "/public/$1"
+    },
+    {
       "handle": "filesystem"
     },
     {
