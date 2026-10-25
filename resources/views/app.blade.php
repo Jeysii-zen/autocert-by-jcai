@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700&family=Great+Vibes&family=Pinyon+Script&family=Alex+Brush&family=Dancing+Script:wght@600&family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,700&family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,500;0,700;1,500;1,700&family=Poppins:ital,wght@0,500;0,700;1,500;1,700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700&family=Cinzel:wght@500;700&family=Libre+Baskerville&display=swap">
 <link rel="stylesheet" href="{{ asset('css/base.css') }}?v={{ filemtime(public_path('css/base.css')) }}">
 <link rel="stylesheet" href="{{ asset('css/styles.css') }}?v={{ filemtime(public_path('css/styles.css')) }}">
 </head>
@@ -97,26 +97,6 @@
         </div>
         <p class="hint" id="namesHint">Paste one name per line, straight from Excel, Google Sheets or a chat.</p>
       </section>
-
-      <section class="step">
-        <h2><span class="n">✦</span>Finished sample <span class="opt">optional</span></h2>
-        <p class="hint">Upload one finished certificate that already has a name on it, from the same Canva design as your blank template. Autocert compares the two and matches the font, size, color and position for you.</p>
-        <label class="drop" id="refDrop">
-          <input type="file" id="refFile" accept="image/png,image/jpeg,image/webp">
-          <strong id="refTitle">Upload a sample with a name</strong>
-          <span class="hint">PNG or JPG downloaded from Canva</span>
-        </label>
-        <img id="refThumb" class="thumb" alt="Your finished sample certificate" hidden>
-        <div class="field">
-          <label for="refName">Name on the sample (to match the font)</label>
-          <input type="text" id="refName" placeholder="e.g. Maria Santos" autocomplete="off" maxlength="120">
-        </div>
-        <div class="row">
-          <button class="primary" id="matchBtn" disabled>Match the name style</button>
-          <button id="compareBtn" disabled aria-pressed="false">Compare with sample</button>
-        </div>
-        <p class="status" id="matchStatus"></p>
-      </section>
     </div>
 
     <section class="stage" aria-label="Preview">
@@ -132,7 +112,7 @@
         </div>
       </div>
       <div class="canvas-box"><canvas id="preview"></canvas></div>
-      <p class="stage-foot">Drag on the certificate to move the name. The dashed box marks the area long names shrink to fit.</p>
+      <p class="stage-foot">Drag on the certificate to move the name (on a phone, press and hold first). The dashed box marks the area long names shrink to fit.</p>
     </section>
 
     <div class="rail rail-right">
@@ -177,6 +157,15 @@
               <option value="italic">Italic</option>
             </select>
           </div>
+        </div>
+        <div class="field">
+          <label for="align">Alignment</label>
+          <select id="align">
+            <option value="left">Left</option>
+            <option value="center">Center</option>
+            <option value="right">Right</option>
+          </select>
+          <p class="hint">Left starts each name at the position, Center centers it there, Right ends it there.</p>
         </div>
         <div class="field">
           <label for="maxW">Max name width <span id="maxWVal"></span></label>

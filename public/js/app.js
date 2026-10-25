@@ -1,10 +1,97 @@
+// Google Fonts that Canva also offers: [name, kind, styles]. Styles lists the
+// real cuts beyond regular ("b" bold, "i" italic); others are synthesized.
+// Each font loads only when it's chosen (see loadFont).
 const FONTS = [
-  ["Great Vibes", "script"], ["Pinyon Script", "script"], ["Alex Brush", "script"], ["Dancing Script", "script"],
-  ["Playfair Display", "serif"], ["Cinzel", "serif"], ["Cormorant Garamond", "serif"], ["Libre Baskerville", "serif"],
-  ["Montserrat", "sans-serif"], ["Poppins", "sans-serif"]
+  // Script and handwriting
+  ["Alex Brush", "script", ""], ["Allura", "script", ""], ["Arizonia", "script", ""],
+  ["Bad Script", "script", ""], ["Ballet", "script", ""], ["Berkshire Swash", "script", ""],
+  ["Bilbo Swash Caps", "script", ""], ["Birthstone", "script", ""], ["Caveat", "script", "b"],
+  ["Cedarville Cursive", "script", ""], ["Charm", "script", "b"], ["Clicker Script", "script", ""],
+  ["Cookie", "script", ""], ["Corinthia", "script", "b"], ["Courgette", "script", ""],
+  ["Damion", "script", ""], ["Dancing Script", "script", "b"], ["Dawning of a New Day", "script", ""],
+  ["Edu SA Beginner", "script", "b"], ["Engagement", "script", ""], ["Euphoria Script", "script", ""],
+  ["Felipa", "script", ""], ["Grand Hotel", "script", ""], ["Great Vibes", "script", ""],
+  ["Herr Von Muellerhoff", "script", ""], ["Homemade Apple", "script", ""], ["Imperial Script", "script", ""],
+  ["Italianno", "script", ""], ["Kalam", "script", "b"], ["Kaushan Script", "script", ""],
+  ["La Belle Aurore", "script", ""], ["Lavishly Yours", "script", ""], ["League Script", "script", ""],
+  ["Lobster", "script", ""], ["Marck Script", "script", ""], ["Mea Culpa", "script", ""],
+  ["Meddon", "script", ""], ["Monsieur La Doulaise", "script", ""], ["Montez", "script", ""],
+  ["Mr De Haviland", "script", ""], ["Mrs Saint Delafield", "script", ""], ["Ms Madi", "script", ""],
+  ["Niconne", "script", ""], ["Norican", "script", ""], ["Nothing You Could Do", "script", ""],
+  ["Oleo Script", "script", "b"], ["Pacifico", "script", ""], ["Parisienne", "script", ""],
+  ["Petit Formal Script", "script", ""], ["Pinyon Script", "script", ""], ["Playball", "script", ""],
+  ["Qwigley", "script", ""], ["Reenie Beanie", "script", ""], ["Rouge Script", "script", ""],
+  ["Ruthie", "script", ""], ["Sacramento", "script", ""], ["Satisfy", "script", ""],
+  ["Style Script", "script", ""], ["Tangerine", "script", "b"], ["Water Brush", "script", ""],
+  ["Whisper", "script", ""], ["WindSong", "script", ""], ["Yellowtail", "script", ""],
+  // Serif
+  ["Aboreto", "serif", ""], ["Abril Fatface", "serif", ""], ["Alfa Slab One", "serif", ""],
+  ["Alice", "serif", ""], ["Almendra", "serif", "bi"], ["Arvo", "serif", "bi"], ["Bellefair", "serif", ""],
+  ["Bitter", "serif", "bi"], ["Bodoni Moda", "serif", "bi"], ["Cardo", "serif", "bi"],
+  ["Castoro", "serif", "i"], ["Cinzel", "serif", "b"], ["Cinzel Decorative", "serif", "b"],
+  ["Cormorant", "serif", "bi"], ["Cormorant Garamond", "serif", "bi"], ["Cormorant SC", "serif", "b"],
+  ["Cormorant Upright", "serif", "b"], ["Crimson Pro", "serif", "bi"], ["Crimson Text", "serif", "bi"],
+  ["Della Respira", "serif", ""], ["DM Serif Display", "serif", "i"], ["Domine", "serif", "b"],
+  ["EB Garamond", "serif", "bi"], ["Federo", "serif", ""], ["Forum", "serif", ""],
+  ["Fraunces", "serif", "bi"], ["Gilda Display", "serif", ""], ["Gloock", "serif", ""],
+  ["IM Fell English", "serif", "i"], ["Instrument Serif", "serif", "i"], ["Italiana", "serif", ""],
+  ["Josefin Slab", "serif", "bi"], ["Libre Baskerville", "serif", "bi"],
+  ["Libre Caslon Display", "serif", ""], ["Libre Caslon Text", "serif", "bi"], ["Limelight", "serif", ""],
+  ["Lora", "serif", "bi"], ["Marcellus", "serif", ""], ["Marcellus SC", "serif", ""],
+  ["Merriweather", "serif", "bi"], ["Newsreader", "serif", "bi"], ["Noto Serif", "serif", "bi"],
+  ["Old Standard TT", "serif", "bi"], ["Pirata One", "serif", ""], ["Playfair Display", "serif", "bi"],
+  ["Playfair Display SC", "serif", "bi"], ["Prata", "serif", ""], ["PT Serif", "serif", "bi"],
+  ["Roboto Slab", "serif", "b"], ["Rozha One", "serif", ""], ["Rye", "serif", ""],
+  ["Sorts Mill Goudy", "serif", "i"], ["Source Serif 4", "serif", "bi"], ["Spectral", "serif", "bi"],
+  ["Trirong", "serif", "bi"], ["Uncial Antiqua", "serif", ""], ["UnifrakturMaguntia", "serif", ""],
+  ["Unna", "serif", "bi"], ["Vollkorn", "serif", "bi"], ["Yeseva One", "serif", ""],
+  ["Young Serif", "serif", ""], ["Zilla Slab", "serif", "bi"],
+  // Sans serif
+  ["Abel", "sans-serif", ""], ["Alata", "sans-serif", ""], ["Alegreya Sans", "sans-serif", "bi"],
+  ["Anton", "sans-serif", ""], ["Antonio", "sans-serif", "b"], ["Archivo", "sans-serif", "bi"],
+  ["Archivo Black", "sans-serif", ""], ["Baloo 2", "sans-serif", "b"], ["Barlow", "sans-serif", "bi"],
+  ["Barlow Condensed", "sans-serif", "bi"], ["Bebas Neue", "sans-serif", ""],
+  ["Big Shoulders Display", "sans-serif", "b"], ["Cabin", "sans-serif", "bi"], ["Chivo", "sans-serif", "bi"],
+  ["Comfortaa", "sans-serif", "b"], ["Didact Gothic", "sans-serif", ""], ["DM Sans", "sans-serif", "bi"],
+  ["Exo 2", "sans-serif", "bi"], ["Figtree", "sans-serif", "bi"], ["Fjalla One", "sans-serif", ""],
+  ["Fredoka", "sans-serif", "b"], ["Gruppo", "sans-serif", ""], ["Heebo", "sans-serif", "b"],
+  ["Hind", "sans-serif", "b"], ["Inter", "sans-serif", "bi"], ["Josefin Sans", "sans-serif", "bi"],
+  ["Julius Sans One", "sans-serif", ""], ["Kanit", "sans-serif", "bi"], ["Karla", "sans-serif", "bi"],
+  ["Lato", "sans-serif", "bi"], ["League Spartan", "sans-serif", "b"], ["Lexend", "sans-serif", "b"],
+  ["Libre Franklin", "sans-serif", "bi"], ["Manrope", "sans-serif", "b"], ["Maven Pro", "sans-serif", "b"],
+  ["Michroma", "sans-serif", ""], ["Montserrat", "sans-serif", "bi"], ["Mulish", "sans-serif", "bi"],
+  ["Noto Sans", "sans-serif", "bi"], ["Nunito", "sans-serif", "bi"], ["Open Sans", "sans-serif", "bi"],
+  ["Oswald", "sans-serif", "b"], ["Outfit", "sans-serif", "b"], ["Pathway Gothic One", "sans-serif", ""],
+  ["Plus Jakarta Sans", "sans-serif", "bi"], ["Poppins", "sans-serif", "bi"], ["Prompt", "sans-serif", "bi"],
+  ["PT Sans", "sans-serif", "bi"], ["Questrial", "sans-serif", ""], ["Quicksand", "sans-serif", "b"],
+  ["Raleway", "sans-serif", "bi"], ["Red Hat Display", "sans-serif", "bi"], ["Righteous", "sans-serif", ""],
+  ["Roboto", "sans-serif", "bi"], ["Rubik", "sans-serif", "bi"], ["Saira", "sans-serif", "bi"],
+  ["Six Caps", "sans-serif", ""], ["Sora", "sans-serif", "b"], ["Source Sans 3", "sans-serif", "bi"],
+  ["Space Grotesk", "sans-serif", "b"], ["Spartan", "sans-serif", "b"], ["Staatliches", "sans-serif", ""],
+  ["Syncopate", "sans-serif", "b"], ["Teko", "sans-serif", "b"], ["Tenor Sans", "sans-serif", ""],
+  ["Titillium Web", "sans-serif", "bi"], ["Ubuntu", "sans-serif", "bi"], ["Urbanist", "sans-serif", "bi"],
+  ["Varela Round", "sans-serif", ""], ["Work Sans", "sans-serif", "bi"],
+  // Display
+  ["Amatic SC", "display", "b"], ["Architects Daughter", "display", ""], ["Audiowide", "display", ""],
+  ["Bangers", "display", ""], ["Black Ops One", "display", ""], ["Boogaloo", "display", ""],
+  ["Bowlby One SC", "display", ""], ["Bungee", "display", ""], ["Bungee Shade", "display", ""],
+  ["Cherry Bomb One", "display", ""], ["Chewy", "display", ""], ["Codystar", "display", ""],
+  ["Coiny", "display", ""], ["Concert One", "display", ""], ["Creepster", "display", ""],
+  ["Elsie", "display", ""], ["Faster One", "display", ""], ["Fredericka the Great", "display", ""],
+  ["Gloria Hallelujah", "display", ""], ["Indie Flower", "display", ""], ["Lobster Two", "display", "bi"],
+  ["Londrina Solid", "display", ""], ["Luckiest Guy", "display", ""], ["Monoton", "display", ""],
+  ["Orbitron", "display", "b"], ["Patrick Hand", "display", ""], ["Permanent Marker", "display", ""],
+  ["Poiret One", "display", ""], ["Press Start 2P", "display", ""], ["Rampart One", "display", ""],
+  ["Rubik Mono One", "display", ""], ["Shadows Into Light", "display", ""], ["Shrikhand", "display", ""],
+  ["Sigmar One", "display", ""], ["Special Elite", "display", ""], ["Titan One", "display", ""],
+  ["Unica One", "display", ""], ["Vast Shadow", "display", ""],
+  // Monospace
+  ["Courier Prime", "monospace", "bi"], ["IBM Plex Mono", "monospace", "bi"],
+  ["JetBrains Mono", "monospace", "bi"], ["Roboto Mono", "monospace", "bi"],
+  ["Source Code Pro", "monospace", "bi"], ["Space Mono", "monospace", "bi"]
 ];
 const SAMPLE_NAMES = "1. Maria Santos\n2. John Paul Dela Cruz\n3. Angelica Reyes\n4. Mark Anthony Villanueva\n5. Kristine Joy Mendoza-Bautista";
-const DEFAULTS = { font: "Great Vibes", size: 7, color: "#1f3a5f", caseMode: "asis", bold: "normal", italic: "normal", maxW: 70, posX: 50, posY: 50 };
+const DEFAULTS = { font: "Great Vibes", size: 7, color: "#1f3a5f", caseMode: "asis", bold: "normal", italic: "normal", align: "center", maxW: 70, posX: 50, posY: 50 };
 const STORE_KEY = "it31-certgen-settings-v1";
 
 const $ = id => document.getElementById(id);
@@ -15,7 +102,6 @@ let current = 0;
 let dragging = false;
 let busy = false;
 let exportedOnce = false;
-let refImg = null, refFile = null, showRef = false;
 
 const settings = Object.assign({}, DEFAULTS, loadSettings());
 
@@ -88,9 +174,33 @@ function loadLib(name) {
 const loadLibs = names => Promise.all(names.map(loadLib));
 
 // ---------- Drawing ----------
+const GENERIC = { script: "cursive", serif: "serif", "sans-serif": "sans-serif", display: "sans-serif", monospace: "monospace" };
 function fontFamilyCss() {
   const f = FONTS.find(x => x[0] === settings.font) || FONTS[0];
-  return `"${f[0]}", ${f[1] === "script" ? "cursive" : f[1]}`;
+  return `"${f[0]}", ${GENERIC[f[1]]}`;
+}
+
+// Google Fonts stylesheet for one font, added once. `text` loads only those
+// letters (the font list shows each name in its own font that way).
+const fontSheets = {};
+function fontSheet(name, text) {
+  const f = FONTS.find(x => x[0] === name);
+  if (!f) return Promise.resolve();
+  const family = name.replace(/ /g, "+");
+  const spec = text ? family
+    : f[2] === "bi" ? `${family}:ital,wght@0,400;0,700;1,400;1,700`
+    : f[2] === "b" ? `${family}:wght@400;700`
+    : f[2] === "i" ? `${family}:ital@0;1` : family;
+  const href = `https://fonts.googleapis.com/css2?family=${spec}&display=swap` + (text ? `&text=${encodeURIComponent(text)}` : "");
+  return fontSheets[href] ||= new Promise(resolve => {
+    const link = Object.assign(document.createElement("link"), { rel: "stylesheet", href });
+    link.onload = link.onerror = () => resolve();
+    document.head.appendChild(link);
+  });
+}
+async function loadFont(name, italic = "normal", bold = "normal") {
+  await fontSheet(name);
+  try { await document.fonts.load(`${italic} ${bold} 40px "${name}"`, "AaBb"); } catch {}
 }
 function drawCertificate(g, img, name) {
   const W = img.width, H = img.height;
@@ -103,25 +213,16 @@ function drawCertificate(g, img, name) {
   const w = g.measureText(text).width;
   if (w > maxWidth) { px = px * maxWidth / w; g.font = `${settings.italic} ${settings.bold} ${px}px ${fontFamilyCss()}`; }
   g.fillStyle = settings.color;
-  g.textAlign = "center";
+  g.textAlign = settings.align;
   g.textBaseline = "middle";
   g.fillText(text, (settings.posX / 100) * W, (settings.posY / 100) * H);
   return { px, maxWidth };
 }
 
-async function ensureFont() {
-  try { await document.fonts.load(`${settings.italic} ${settings.bold} 40px "${settings.font}"`, "AaBb"); } catch {}
-}
+function ensureFont() { return loadFont(settings.font, settings.italic, settings.bold); }
 
 async function render() {
   if (!template) return;
-  if (showRef && refImg) {
-    canvas.width = template.width; canvas.height = template.height;
-    ctx.drawImage(refImg, 0, 0, canvas.width, canvas.height);
-    $("who").innerHTML = "<b>Your finished sample</b> · click Compare again to go back";
-    $("pos").textContent = "Sample";
-    return;
-  }
   await ensureFont();
   const names = parseNames();
   if (current >= names.length) current = Math.max(0, names.length - 1);
@@ -134,7 +235,8 @@ async function render() {
   ctx.save();
   ctx.setLineDash([12, 10]); ctx.lineWidth = Math.max(2, canvas.width / 900);
   ctx.strokeStyle = "rgba(35,134,208,.85)";
-  ctx.strokeRect(cx - maxWidth / 2, cy - px * 0.7, maxWidth, px * 1.4);
+  const boxLeft = settings.align === "left" ? cx : settings.align === "right" ? cx - maxWidth : cx - maxWidth / 2;
+  ctx.strokeRect(boxLeft, cy - px * 0.7, maxWidth, px * 1.4);
   ctx.restore();
   $("who").innerHTML = names.length ? "<b></b>" : "No names yet";
   if (names.length) { const b = $("who").querySelector("b"); b.textContent = applyCase(name); $("who").title = applyCase(name); }
@@ -179,7 +281,7 @@ async function buildGallery() {
     const label = document.createElement("span");
     label.textContent = `${i + 1}. ${applyCase(names[i])}`;
     card.append(c, label);
-    card.addEventListener("click", async () => { const d = Math.sign(i - current); current = i; showRef = false; $("compareBtn").setAttribute("aria-pressed", "false"); await render(); swapPreview(d); });
+    card.addEventListener("click", async () => { const d = Math.sign(i - current); current = i; await render(); swapPreview(d); });
     card.style.animationDelay = `${Math.min(i, 16) * 35}ms`;
     box.appendChild(card);
     if (i === 3) fitGallery();
@@ -258,7 +360,7 @@ function syncBadge() {
 // ---------- Controls ----------
 function initControls() {
   const sel = $("font");
-  FONTS.forEach(([name]) => { const o = document.createElement("option"); o.value = name; o.textContent = name; o.style.fontFamily = `"${name}"`; sel.appendChild(o); });
+  FONTS.forEach(([name]) => { const o = document.createElement("option"); o.value = name; o.textContent = name; sel.appendChild(o); });
   const bind = (id, key, fmt) => {
     const el = $(id);
     el.value = settings[key];
@@ -276,6 +378,7 @@ function initControls() {
   bind("caseMode", "caseMode");
   bind("bold", "bold");
   bind("italic", "italic");
+  bind("align", "align");
   bind("maxW", "maxW", v => `(${v}%)`);
   bind("posX", "posX", v => `(${v.toFixed(1)}%)`);
   bind("posY", "posY", v => `(${v.toFixed(1)}%)`);
@@ -309,22 +412,44 @@ function initControls() {
     $("posYVal").textContent = `(${settings.posY.toFixed(1)}%)`;
     render();
   };
-  canvas.addEventListener("pointerdown", e => { dragging = true; canvas.setPointerCapture(e.pointerId); moveTo(e); });
-  canvas.addEventListener("pointermove", e => { if (dragging) moveTo(e); });
-  canvas.addEventListener("pointerup", () => { dragging = false; saveSettings(); });
-  canvas.addEventListener("pointercancel", () => { dragging = false; });
+  // Mouse and pen drag right away. A finger has to press and hold first, so
+  // swiping across the preview scrolls the page instead of moving the name.
+  let hold = null;
+  const startDrag = e => { dragging = true; canvas.classList.add("dragging"); canvas.setPointerCapture(e.pointerId); moveTo(e); };
+  const endDrag = () => {
+    if (hold) { clearTimeout(hold.timer); hold = null; }
+    if (dragging) { dragging = false; canvas.classList.remove("dragging"); saveSettings(); }
+  };
+  canvas.addEventListener("pointerdown", e => {
+    if (e.pointerType !== "touch") { startDrag(e); return; }
+    hold = { x: e.clientX, y: e.clientY, timer: setTimeout(() => { hold = null; navigator.vibrate?.(10); startDrag(e); }, 350) };
+  });
+  canvas.addEventListener("pointermove", e => {
+    if (hold && Math.hypot(e.clientX - hold.x, e.clientY - hold.y) > 8) endDrag();   // it's a scroll
+    else if (dragging) moveTo(e);
+  });
+  canvas.addEventListener("pointerup", endDrag);
+  canvas.addEventListener("pointercancel", endDrag);
+  canvas.addEventListener("contextmenu", e => { if (dragging || hold) e.preventDefault(); });
+  // Once a finger is dragging the name, keep the page from scrolling under it.
+  canvas.addEventListener("touchmove", e => { if (dragging) e.preventDefault(); }, { passive: false });
 
-  // Finished sample (reference)
-  const rf = $("refFile"), rd = $("refDrop");
-  rf.addEventListener("change", () => rf.files[0] && loadReference(rf.files[0]));
-  ["dragenter", "dragover"].forEach(ev => rd.addEventListener(ev, e => { e.preventDefault(); rd.classList.add("over"); }));
-  ["dragleave", "drop"].forEach(ev => rd.addEventListener(ev, e => { e.preventDefault(); rd.classList.remove("over"); }));
-  rd.addEventListener("drop", e => { const f = e.dataTransfer.files[0]; if (f) loadReference(f); });
-  $("matchBtn").addEventListener("click", matchStyle);
-  $("compareBtn").addEventListener("click", () => {
-    showRef = !showRef;
-    $("compareBtn").setAttribute("aria-pressed", String(showRef));
-    render();
+  // Sliders: on a phone a swipe that starts on a slider is usually a scroll.
+  // If the page scrolls (pointercancel) or the finger moves more up/down than
+  // sideways, put the slider back where it was.
+  document.querySelectorAll('input[type="range"]').forEach(r => {
+    let start = null;
+    const restore = () => {
+      if (!start) return;
+      if (r.value !== start.value) { r.value = start.value; r.dispatchEvent(new Event("input")); }
+      start = null;
+    };
+    r.addEventListener("pointerdown", e => { start = e.pointerType === "touch" ? { value: r.value, x: e.clientX, y: e.clientY } : null; });
+    r.addEventListener("pointermove", e => {
+      if (start && Math.abs(e.clientY - start.y) > 10 && Math.abs(e.clientY - start.y) > Math.abs(e.clientX - start.x)) restore();
+    });
+    r.addEventListener("pointercancel", restore);
+    r.addEventListener("pointerup", () => { start = null; });
   });
 
   const chosenFormat = () => (document.querySelector('input[name="fmt"]:checked') || {}).value || "pdf";
@@ -352,197 +477,6 @@ function loadTemplate(f) {
   };
   img.onerror = () => setStatus("The image couldn't be opened. Try exporting it again from Canva as PNG.");
   img.src = url;
-}
-
-// ---------- Finished sample: match the name style ----------
-function loadReference(f) {
-  if (!/^image\/(png|jpeg|webp)$/.test(f.type)) {
-    $("matchStatus").textContent = "That file isn't a PNG or JPG. Download the finished certificate from Canva as PNG.";
-    return;
-  }
-  const img = new Image();
-  img.onload = () => {
-    refImg = img; refFile = f;
-    $("refTitle").textContent = f.name;
-    $("refThumb").src = img.src; $("refThumb").hidden = false;
-    $("matchBtn").disabled = false; $("compareBtn").disabled = false;
-    $("matchStatus").textContent = "Sample loaded. Click Match the name style.";
-    if (template && !usingSample && Math.abs(img.width / img.height - template.width / template.height) > 0.02)
-      $("matchStatus").textContent = "Heads up: this sample has a different shape than your blank template. Make sure both come from the same Canva design.";
-  };
-  img.onerror = () => { $("matchStatus").textContent = "The image couldn't be opened. Try exporting it again as PNG."; };
-  img.src = URL.createObjectURL(f);
-}
-
-function setControl(id, key, value, fmt) {
-  settings[key] = value;
-  $(id).value = value;
-  if ($(id)._sync) $(id)._sync();
-  const out = $(id + "Val");
-  if (out && fmt) out.textContent = fmt(value);
-}
-
-// Works without Claude: the finished sample and the blank template are the
-// same design, so the pixels that differ are the name. Their bounding box
-// gives position and width, their color gives the text color, and drawing
-// the name in every font and comparing shapes picks the font.
-// Analysis width in pixels: near full size, so stroke weight (normal or bold)
-// still shows, but capped so huge exports stay quick.
-const MATCH_MAX_W = 1800;
-
-function pixelsAt(img, w, h) {
-  const c = document.createElement("canvas");
-  c.width = w; c.height = h;
-  const g = c.getContext("2d", { willReadFrequently: true });
-  g.imageSmoothingQuality = "high";
-  g.drawImage(img, 0, 0, w, h);
-  return g.getImageData(0, 0, w, h).data;
-}
-
-// Longest run of indexes whose count is above zero, allowing small gaps.
-function densestRun(counts, maxGap) {
-  let best = null, start = -1, last = -1, sum = 0;
-  const close = () => { if (start >= 0 && (!best || sum > best.sum)) best = { from: start, to: last, sum }; };
-  counts.forEach((n, i) => {
-    if (!n) return;
-    if (start < 0 || i - last > maxGap) { close(); start = i; sum = 0; }
-    last = i; sum += n;
-  });
-  close();
-  return best;
-}
-
-// Where the name is on the sample, as a box in analysis pixels, plus its color.
-function findName(tpl, ref, w, h) {
-  const diff = new Float32Array(w * h);
-  for (let i = 0, p = 0; i < diff.length; i++, p += 4)
-    diff[i] = Math.abs(ref[p] - tpl[p]) + Math.abs(ref[p + 1] - tpl[p + 1]) + Math.abs(ref[p + 2] - tpl[p + 2]);
-  const on = i => diff[i] > 90;   // ignores JPEG noise and slight export differences
-
-  const rows = new Array(h).fill(0);
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (on(y * w + x)) rows[y]++;
-  // A row needs a few changed pixels to count, so stray noise doesn't join the band.
-  const band = densestRun(rows.map(n => (n > 2 ? n : 0)), Math.round(h * 0.02));
-  if (!band || band.sum < 40) return null;
-
-  const cols = new Array(w).fill(0);
-  for (let y = band.from; y <= band.to; y++) for (let x = 0; x < w; x++) if (on(y * w + x)) cols[x]++;
-  const span = densestRun(cols, Math.round(w * 0.06));   // spaces between words stay inside
-  let top = band.to, bottom = band.from;
-  for (let y = band.from; y <= band.to; y++)
-    for (let x = span.from; x <= span.to; x++) if (on(y * w + x)) { top = Math.min(top, y); bottom = Math.max(bottom, y); }
-
-  const strong = [];
-  for (let y = top; y <= bottom; y++) for (let x = span.from; x <= span.to; x++) if (on(y * w + x)) strong.push(y * w + x);
-  // Color: the most-changed pixels are the solid middle of the letters, not
-  // the anti-aliased edges that blend with the background.
-  strong.sort((a, b) => diff[b] - diff[a]);
-  const core = strong.slice(0, Math.max(1, Math.round(strong.length * 0.15)));
-  const median = k => { const v = core.map(i => ref[i * 4 + k]).sort((a, b) => a - b); return v[v.length >> 1]; };
-  const color = "#" + [0, 1, 2].map(k => median(k).toString(16).padStart(2, "0")).join("");
-
-  // How much of each pixel the name's ink covers (0-1): solid letter pixels
-  // change the most, anti-aliased edges proportionally less.
-  const solid = diff[core[core.length >> 1]];
-  const cover = new Float32Array(w * h);
-  for (const i of strong) cover[i] = Math.min(1, diff[i] / solid);
-
-  return { left: span.from, right: span.to + 1, top, bottom: bottom + 1, cover, color };
-}
-
-// How closely `text` in this font covers the same pixels as the name, from 0
-// to 1 (overlapping ink divided by all ink, counting partly covered pixels).
-function shapeScore(found, w, h, text, font, italic, bold, g) {
-  const boxW = found.right - found.left, boxH = found.bottom - found.top;
-  const family = `"${font[0]}", ${font[1] === "script" ? "cursive" : font[1]}`;
-  g.textAlign = "center"; g.textBaseline = "middle";
-  g.font = `${italic} ${bold} 100px ${family}`;
-  let m = g.measureText(text);
-  const inkW = m.actualBoundingBoxLeft + m.actualBoundingBoxRight;
-  if (!inkW) return null;
-  const px = 100 * boxW / inkW;
-  g.font = `${italic} ${bold} ${px}px ${family}`;
-  m = g.measureText(text);
-  // Line the drawn ink up with the found box.
-  const x = found.left + m.actualBoundingBoxLeft, y = found.top + m.actualBoundingBoxAscent;
-  g.clearRect(0, 0, w, h);
-  g.fillStyle = "#000";
-  g.fillText(text, x, y);
-  const pad = Math.round(boxH * 0.5);
-  const x0 = Math.max(0, found.left - pad), y0 = Math.max(0, found.top - pad);
-  const x1 = Math.min(w, found.right + pad), y1 = Math.min(h, found.bottom + pad);
-  const img = g.getImageData(x0, y0, x1 - x0, y1 - y0).data;
-  let both = 0, either = 0;
-  for (let yy = y0, p = 3; yy < y1; yy++)
-    for (let xx = x0; xx < x1; xx++, p += 4) {
-      const a = img[p] / 255, b = found.cover[yy * w + xx];
-      both += Math.min(a, b); either += Math.max(a, b);
-    }
-  return { score: either ? both / either : 0, px, x, y, advance: m.width };
-}
-
-async function matchStyle() {
-  const btn = $("matchBtn"), out = $("matchStatus");
-  if (!template || usingSample) { out.textContent = "Upload your blank template in step 1 first. The match compares it with this finished sample."; return; }
-  btn.disabled = true;
-  out.textContent = "Comparing your sample with the template…";
-  await tick();
-  try {
-    // Compare at the smaller image's size: enlarging one would blur its
-    // edges, and blurred borders and titles would look like changed pixels.
-    const w = Math.min(MATCH_MAX_W, template.width, refImg.width), h = Math.round(w * template.height / template.width);
-    const found = findName(pixelsAt(template, w, h), pixelsAt(refImg, w, h), w, h);
-    if (!found) { out.textContent = "No name found: the sample looks the same as the blank template. Make sure the sample has a name on it and both come from the same Canva design."; return; }
-
-    const text = $("refName").value.replace(/\s+/g, " ").trim();
-    setControl("color", "color", found.color);
-    let best = null;
-    if (text) {
-      out.textContent = "Found the name. Trying each font…";
-      await Promise.all(FONTS.flatMap(f => ["normal", "italic"].flatMap(it => ["normal", "bold"].map(b =>
-        document.fonts.load(`${it} ${b} 40px "${f[0]}"`, text).catch(() => {})))));
-      const c = document.createElement("canvas");
-      c.width = w; c.height = h;
-      const g = c.getContext("2d", { willReadFrequently: true });
-      const upper = text.toLocaleUpperCase();
-      const variants = text === upper ? [["upper", upper]] : [["asis", text], ["upper", upper]];
-      for (const font of FONTS) for (const italic of ["normal", "italic"]) for (const bold of ["normal", "bold"]) for (const [caseMode, t] of variants) {
-        const r = shapeScore(found, w, h, t, font, italic, bold, g);
-        if (r && (!best || r.score > best.score)) best = { ...r, font, italic, bold, caseMode };
-      }
-      await tick();
-    }
-
-    if (best) {
-      setControl("font", "font", best.font[0]);
-      setControl("bold", "bold", best.bold);
-      setControl("italic", "italic", best.italic);
-      setControl("caseMode", "caseMode", best.caseMode === "upper" ? "upper" : "asis");
-      setControl("size", "size", Math.min(20, Math.max(2, +(best.px / h * 100).toFixed(1))), v => `(${v.toFixed(1)}% of height)`);
-      setControl("posX", "posX", best.x / w * 100, v => `(${v.toFixed(1)}%)`);
-      setControl("posY", "posY", best.y / h * 100, v => `(${v.toFixed(1)}%)`);
-      // Room for longer names than the sample's before they shrink to fit.
-      setControl("maxW", "maxW", Math.round(Math.min(95, Math.max(settings.maxW, best.advance / w * 140))), v => `(${v}%)`);
-    } else {
-      // Without the name's text only the box is known: centre on it and size
-      // from its height (letters with tails make the box about 1.3 × the size).
-      const boxH = (found.bottom - found.top) / h * 100;
-      setControl("posX", "posX", (found.left + found.right) / 2 / w * 100, v => `(${v.toFixed(1)}%)`);
-      setControl("posY", "posY", (found.top + found.bottom) / 2 / h * 100, v => `(${v.toFixed(1)}%)`);
-      setControl("size", "size", Math.min(20, Math.max(2, +(boxH / 1.3).toFixed(1))), v => `(${v.toFixed(1)}% of height)`);
-      setControl("maxW", "maxW", Math.round(Math.min(95, Math.max(settings.maxW, (found.right - found.left) / w * 140))), v => `(${v}%)`);
-    }
-    saveSettings();
-    showRef = false; $("compareBtn").setAttribute("aria-pressed", "false");
-    await render();
-    out.textContent = best
-      ? `Matched: ${settings.font}, ${settings.color}. Use Compare with sample to check it, and fine-tune below if needed.`
-      : `Matched the position, size and color (${settings.color}). Type the name shown on the sample above to match the font too.`;
-  } catch (e) {
-    out.textContent = "The sample couldn't be compared. Set the style by hand below.";
-  } finally {
-    btn.disabled = false;
-  }
 }
 
 // ---------- Export ----------
@@ -630,31 +564,65 @@ function enhanceSelect(sel, fontPreview) {
   const lbl = document.querySelector(`label[for="${sel.id}"]`);
   if (lbl) { lbl.htmlFor = btn.id; lbl.id = sel.id + "Lbl"; list.setAttribute("aria-labelledby", lbl.id); }
   let active = 0;
-  const items = [...sel.options].map((o, i) => {
+  // The font list is long: a search box on top, and each name shown in its
+  // own font once it scrolls into view (only the letters of the name load).
+  let search = null;
+  if (fontPreview) {
+    const li = document.createElement("li");
+    li.className = "dd-search"; li.setAttribute("role", "presentation");
+    search = Object.assign(document.createElement("input"), { type: "search", placeholder: "Search fonts", autocomplete: "off" });
+    search.setAttribute("aria-label", "Search fonts");
+    search.addEventListener("input", () => {
+      const q = search.value.trim().toLowerCase();
+      items.forEach(li => { li.hidden = !!q && !li.dataset.value.toLowerCase().includes(q); });
+      setActive(0);
+    });
+    // Arrow keys, Enter and Escape work from the search box too.
+    search.addEventListener("keydown", e => {
+      if (!["ArrowDown", "ArrowUp", "Enter", "Escape"].includes(e.key)) return;
+      e.preventDefault();
+      btn.dispatchEvent(new KeyboardEvent("keydown", { key: e.key }));
+      if (e.key === "Escape") btn.focus();
+    });
+    li.appendChild(search); list.appendChild(li);
+  }
+  const preview = fontPreview && "IntersectionObserver" in window && new IntersectionObserver(entries => entries.forEach(en => {
+    if (!en.isIntersecting) return;
+    const name = en.target.dataset.value;
+    preview.unobserve(en.target);
+    fontSheet(name, name).then(() => { en.target.style.fontFamily = `"${name}", var(--font-body)`; });
+  }), { root: list, rootMargin: "120px 0px" });
+  const items = [...sel.options].map(o => {
     const li = document.createElement("li");
     li.setAttribute("role", "option"); li.dataset.value = o.value; li.textContent = o.textContent;
-    if (fontPreview) li.style.fontFamily = `"${o.value}", var(--font-body)`;
+    if (preview) preview.observe(li);
     li.addEventListener("click", () => choose(o.value));
-    li.addEventListener("mousemove", () => setActive(i, false));
+    li.addEventListener("mousemove", () => setActive(shown().indexOf(li), false));
     list.appendChild(li);
     return li;
   });
+  const shown = () => items.filter(li => !li.hidden);
   function setActive(i, scroll = true) {
-    active = (i + items.length) % items.length;
-    items.forEach((li, j) => li.classList.toggle("active", j === active));
-    if (scroll) items[active].scrollIntoView({ block: "nearest" });
+    const vis = shown();
+    if (!vis.length) return;
+    active = (i + vis.length) % vis.length;
+    items.forEach(li => li.classList.toggle("active", li === vis[active]));
+    if (scroll) vis[active].scrollIntoView({ block: "nearest" });
   }
   function sync() {
     const o = sel.options[sel.selectedIndex];
     btn.textContent = o ? o.textContent : "";
-    if (fontPreview) btn.style.fontFamily = `"${sel.value}", var(--font-body)`;
+    if (fontPreview) fontSheet(sel.value, sel.value).then(() => { btn.style.fontFamily = `"${sel.value}", var(--font-body)`; });
     items.forEach(li => li.setAttribute("aria-selected", String(li.dataset.value === sel.value)));
   }
   const outside = e => { if (!wrap.contains(e.target)) close(); };
   function open() {
     list.hidden = false; btn.setAttribute("aria-expanded", "true");
     wrap.closest(".step")?.classList.add("has-open");
+    if (search) { search.value = ""; items.forEach(li => { li.hidden = false; }); }
     setActive(Math.max(0, sel.selectedIndex));
+    // Focus the search with a mouse; on phones that would pop up the keyboard.
+    if (search && matchMedia("(pointer: fine)").matches) search.focus();
     document.addEventListener("pointerdown", outside, true);
   }
   function close() {
@@ -668,7 +636,7 @@ function enhanceSelect(sel, fontPreview) {
     if (list.hidden) { if (["ArrowDown", "ArrowUp", "Enter", " "].includes(e.key)) { e.preventDefault(); open(); } return; }
     if (e.key === "ArrowDown") { e.preventDefault(); setActive(active + 1); }
     else if (e.key === "ArrowUp") { e.preventDefault(); setActive(active - 1); }
-    else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); choose(items[active].dataset.value); }
+    else if (e.key === "Enter" || (e.key === " " && e.target === btn)) { e.preventDefault(); const li = shown()[active]; if (li) choose(li.dataset.value); }
     else if (e.key === "Escape" || e.key === "Tab") close();
   });
   sel._sync = sync;
@@ -1093,6 +1061,7 @@ enhanceSelect($("font"), true);
 enhanceSelect($("caseMode"));
 enhanceSelect($("bold"));
 enhanceSelect($("italic"));
+enhanceSelect($("align"));
 initServerSend();
 initMail();
 template = makeSampleTemplate();
