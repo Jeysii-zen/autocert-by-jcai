@@ -13,6 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Vercel ends HTTPS at its proxy; trust it so asset() and url() build
+        // https:// links instead of http:// ones the browser blocks.
+        $middleware->trustProxies(at: '*');
         $middleware->web(append: [SecurityHeaders::class]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
