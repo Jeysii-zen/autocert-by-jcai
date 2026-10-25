@@ -318,6 +318,7 @@ IT 31</textarea>
 
 @endverbatim
 <script src="{{ asset('js/platform.js') }}?v={{ filemtime(public_path('js/platform.js')) }}"></script>
+<script src="{{ asset('js/fonts.js') }}?v={{ filemtime(public_path('js/fonts.js')) }}"></script>
 <script src="{{ asset('js/app.js') }}?v={{ filemtime(public_path('js/app.js')) }}"></script>
 </body>
 </html>

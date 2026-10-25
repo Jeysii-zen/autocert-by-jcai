@@ -1,95 +1,4 @@
-// Google Fonts that Canva also offers: [name, kind, styles]. Styles lists the
-// real cuts beyond regular ("b" bold, "i" italic); others are synthesized.
-// Each font loads only when it's chosen (see loadFont).
-const FONTS = [
-  // Script and handwriting
-  ["Alex Brush", "script", ""], ["Allura", "script", ""], ["Arizonia", "script", ""],
-  ["Bad Script", "script", ""], ["Ballet", "script", ""], ["Berkshire Swash", "script", ""],
-  ["Bilbo Swash Caps", "script", ""], ["Birthstone", "script", ""], ["Caveat", "script", "b"],
-  ["Cedarville Cursive", "script", ""], ["Charm", "script", "b"], ["Clicker Script", "script", ""],
-  ["Cookie", "script", ""], ["Corinthia", "script", "b"], ["Courgette", "script", ""],
-  ["Damion", "script", ""], ["Dancing Script", "script", "b"], ["Dawning of a New Day", "script", ""],
-  ["Edu SA Beginner", "script", "b"], ["Engagement", "script", ""], ["Euphoria Script", "script", ""],
-  ["Felipa", "script", ""], ["Grand Hotel", "script", ""], ["Great Vibes", "script", ""],
-  ["Herr Von Muellerhoff", "script", ""], ["Homemade Apple", "script", ""], ["Imperial Script", "script", ""],
-  ["Italianno", "script", ""], ["Kalam", "script", "b"], ["Kaushan Script", "script", ""],
-  ["La Belle Aurore", "script", ""], ["Lavishly Yours", "script", ""], ["League Script", "script", ""],
-  ["Lobster", "script", ""], ["Marck Script", "script", ""], ["Mea Culpa", "script", ""],
-  ["Meddon", "script", ""], ["Monsieur La Doulaise", "script", ""], ["Montez", "script", ""],
-  ["Mr De Haviland", "script", ""], ["Mrs Saint Delafield", "script", ""], ["Ms Madi", "script", ""],
-  ["Niconne", "script", ""], ["Norican", "script", ""], ["Nothing You Could Do", "script", ""],
-  ["Oleo Script", "script", "b"], ["Pacifico", "script", ""], ["Parisienne", "script", ""],
-  ["Petit Formal Script", "script", ""], ["Pinyon Script", "script", ""], ["Playball", "script", ""],
-  ["Qwigley", "script", ""], ["Reenie Beanie", "script", ""], ["Rouge Script", "script", ""],
-  ["Ruthie", "script", ""], ["Sacramento", "script", ""], ["Satisfy", "script", ""],
-  ["Style Script", "script", ""], ["Tangerine", "script", "b"], ["Water Brush", "script", ""],
-  ["Whisper", "script", ""], ["WindSong", "script", ""], ["Yellowtail", "script", ""],
-  // Serif
-  ["Aboreto", "serif", ""], ["Abril Fatface", "serif", ""], ["Alfa Slab One", "serif", ""],
-  ["Alice", "serif", ""], ["Almendra", "serif", "bi"], ["Arvo", "serif", "bi"], ["Bellefair", "serif", ""],
-  ["Bitter", "serif", "bi"], ["Bodoni Moda", "serif", "bi"], ["Cardo", "serif", "bi"],
-  ["Castoro", "serif", "i"], ["Cinzel", "serif", "b"], ["Cinzel Decorative", "serif", "b"],
-  ["Cormorant", "serif", "bi"], ["Cormorant Garamond", "serif", "bi"], ["Cormorant SC", "serif", "b"],
-  ["Cormorant Upright", "serif", "b"], ["Crimson Pro", "serif", "bi"], ["Crimson Text", "serif", "bi"],
-  ["Della Respira", "serif", ""], ["DM Serif Display", "serif", "i"], ["Domine", "serif", "b"],
-  ["EB Garamond", "serif", "bi"], ["Federo", "serif", ""], ["Forum", "serif", ""],
-  ["Fraunces", "serif", "bi"], ["Gilda Display", "serif", ""], ["Gloock", "serif", ""],
-  ["IM Fell English", "serif", "i"], ["Instrument Serif", "serif", "i"], ["Italiana", "serif", ""],
-  ["Josefin Slab", "serif", "bi"], ["Libre Baskerville", "serif", "bi"],
-  ["Libre Caslon Display", "serif", ""], ["Libre Caslon Text", "serif", "bi"], ["Limelight", "serif", ""],
-  ["Lora", "serif", "bi"], ["Marcellus", "serif", ""], ["Marcellus SC", "serif", ""],
-  ["Merriweather", "serif", "bi"], ["Newsreader", "serif", "bi"], ["Noto Serif", "serif", "bi"],
-  ["Old Standard TT", "serif", "bi"], ["Pirata One", "serif", ""], ["Playfair Display", "serif", "bi"],
-  ["Playfair Display SC", "serif", "bi"], ["Prata", "serif", ""], ["PT Serif", "serif", "bi"],
-  ["Roboto Slab", "serif", "b"], ["Rozha One", "serif", ""], ["Rye", "serif", ""],
-  ["Sorts Mill Goudy", "serif", "i"], ["Source Serif 4", "serif", "bi"], ["Spectral", "serif", "bi"],
-  ["Trirong", "serif", "bi"], ["Uncial Antiqua", "serif", ""], ["UnifrakturMaguntia", "serif", ""],
-  ["Unna", "serif", "bi"], ["Vollkorn", "serif", "bi"], ["Yeseva One", "serif", ""],
-  ["Young Serif", "serif", ""], ["Zilla Slab", "serif", "bi"],
-  // Sans serif
-  ["Abel", "sans-serif", ""], ["Alata", "sans-serif", ""], ["Alegreya Sans", "sans-serif", "bi"],
-  ["Anton", "sans-serif", ""], ["Antonio", "sans-serif", "b"], ["Archivo", "sans-serif", "bi"],
-  ["Archivo Black", "sans-serif", ""], ["Baloo 2", "sans-serif", "b"], ["Barlow", "sans-serif", "bi"],
-  ["Barlow Condensed", "sans-serif", "bi"], ["Bebas Neue", "sans-serif", ""],
-  ["Big Shoulders Display", "sans-serif", "b"], ["Cabin", "sans-serif", "bi"], ["Chivo", "sans-serif", "bi"],
-  ["Comfortaa", "sans-serif", "b"], ["Didact Gothic", "sans-serif", ""], ["DM Sans", "sans-serif", "bi"],
-  ["Exo 2", "sans-serif", "bi"], ["Figtree", "sans-serif", "bi"], ["Fjalla One", "sans-serif", ""],
-  ["Fredoka", "sans-serif", "b"], ["Gruppo", "sans-serif", ""], ["Heebo", "sans-serif", "b"],
-  ["Hind", "sans-serif", "b"], ["Inter", "sans-serif", "bi"], ["Josefin Sans", "sans-serif", "bi"],
-  ["Julius Sans One", "sans-serif", ""], ["Kanit", "sans-serif", "bi"], ["Karla", "sans-serif", "bi"],
-  ["Lato", "sans-serif", "bi"], ["League Spartan", "sans-serif", "b"], ["Lexend", "sans-serif", "b"],
-  ["Libre Franklin", "sans-serif", "bi"], ["Manrope", "sans-serif", "b"], ["Maven Pro", "sans-serif", "b"],
-  ["Michroma", "sans-serif", ""], ["Montserrat", "sans-serif", "bi"], ["Mulish", "sans-serif", "bi"],
-  ["Noto Sans", "sans-serif", "bi"], ["Nunito", "sans-serif", "bi"], ["Open Sans", "sans-serif", "bi"],
-  ["Oswald", "sans-serif", "b"], ["Outfit", "sans-serif", "b"], ["Pathway Gothic One", "sans-serif", ""],
-  ["Plus Jakarta Sans", "sans-serif", "bi"], ["Poppins", "sans-serif", "bi"], ["Prompt", "sans-serif", "bi"],
-  ["PT Sans", "sans-serif", "bi"], ["Questrial", "sans-serif", ""], ["Quicksand", "sans-serif", "b"],
-  ["Raleway", "sans-serif", "bi"], ["Red Hat Display", "sans-serif", "bi"], ["Righteous", "sans-serif", ""],
-  ["Roboto", "sans-serif", "bi"], ["Rubik", "sans-serif", "bi"], ["Saira", "sans-serif", "bi"],
-  ["Six Caps", "sans-serif", ""], ["Sora", "sans-serif", "b"], ["Source Sans 3", "sans-serif", "bi"],
-  ["Space Grotesk", "sans-serif", "b"], ["Spartan", "sans-serif", "b"], ["Staatliches", "sans-serif", ""],
-  ["Syncopate", "sans-serif", "b"], ["Teko", "sans-serif", "b"], ["Tenor Sans", "sans-serif", ""],
-  ["Titillium Web", "sans-serif", "bi"], ["Ubuntu", "sans-serif", "bi"], ["Urbanist", "sans-serif", "bi"],
-  ["Varela Round", "sans-serif", ""], ["Work Sans", "sans-serif", "bi"],
-  // Display
-  ["Amatic SC", "display", "b"], ["Architects Daughter", "display", ""], ["Audiowide", "display", ""],
-  ["Bangers", "display", ""], ["Black Ops One", "display", ""], ["Boogaloo", "display", ""],
-  ["Bowlby One SC", "display", ""], ["Bungee", "display", ""], ["Bungee Shade", "display", ""],
-  ["Cherry Bomb One", "display", ""], ["Chewy", "display", ""], ["Codystar", "display", ""],
-  ["Coiny", "display", ""], ["Concert One", "display", ""], ["Creepster", "display", ""],
-  ["Elsie", "display", ""], ["Faster One", "display", ""], ["Fredericka the Great", "display", ""],
-  ["Gloria Hallelujah", "display", ""], ["Indie Flower", "display", ""], ["Lobster Two", "display", "bi"],
-  ["Londrina Solid", "display", ""], ["Luckiest Guy", "display", ""], ["Monoton", "display", ""],
-  ["Orbitron", "display", "b"], ["Patrick Hand", "display", ""], ["Permanent Marker", "display", ""],
-  ["Poiret One", "display", ""], ["Press Start 2P", "display", ""], ["Rampart One", "display", ""],
-  ["Rubik Mono One", "display", ""], ["Shadows Into Light", "display", ""], ["Shrikhand", "display", ""],
-  ["Sigmar One", "display", ""], ["Special Elite", "display", ""], ["Titan One", "display", ""],
-  ["Unica One", "display", ""], ["Vast Shadow", "display", ""],
-  // Monospace
-  ["Courier Prime", "monospace", "bi"], ["IBM Plex Mono", "monospace", "bi"],
-  ["JetBrains Mono", "monospace", "bi"], ["Roboto Mono", "monospace", "bi"],
-  ["Source Code Pro", "monospace", "bi"], ["Space Mono", "monospace", "bi"]
-];
+// FONTS (every Google Font with Latin letters) is in fonts.js, loaded first.
 const SAMPLE_NAMES = "1. Maria Santos\n2. John Paul Dela Cruz\n3. Angelica Reyes\n4. Mark Anthony Villanueva\n5. Kristine Joy Mendoza-Bautista";
 const DEFAULTS = { font: "Great Vibes", size: 7, color: "#1f3a5f", caseMode: "asis", bold: "normal", italic: "normal", align: "center", maxW: 70, posX: 50, posY: 50 };
 const STORE_KEY = "it31-certgen-settings-v1";
@@ -180,18 +89,23 @@ function fontFamilyCss() {
   return `"${f[0]}", ${GENERIC[f[1]]}`;
 }
 
+// The Google Fonts "family=" value asking for exactly the cuts a font has;
+// asking for one it lacks makes Google reject the whole request.
+function fontSpec([name, , styles]) {
+  const family = name.replace(/ /g, "+");
+  if (styles[0] === "w") return `${family}:wght@${styles.slice(1)}`;
+  const cuts = [["r", "0,400"], ["b", "0,700"], ["i", "1,400"], ["j", "1,700"]].filter(([c]) => styles.includes(c)).map(([, v]) => v);
+  if (cuts.some(v => v[0] === "1")) return `${family}:ital,wght@${cuts.join(";")}`;
+  return cuts.length === 1 && cuts[0] === "0,400" ? family : `${family}:wght@${cuts.map(v => v.slice(2)).join(";")}`;
+}
+
 // Google Fonts stylesheet for one font, added once. `text` loads only those
 // letters (the font list shows each name in its own font that way).
 const fontSheets = {};
 function fontSheet(name, text) {
   const f = FONTS.find(x => x[0] === name);
   if (!f) return Promise.resolve();
-  const family = name.replace(/ /g, "+");
-  const spec = text ? family
-    : f[2] === "bi" ? `${family}:ital,wght@0,400;0,700;1,400;1,700`
-    : f[2] === "b" ? `${family}:wght@400;700`
-    : f[2] === "i" ? `${family}:ital@0;1` : family;
-  const href = `https://fonts.googleapis.com/css2?family=${spec}&display=swap` + (text ? `&text=${encodeURIComponent(text)}` : "");
+  const href = `https://fonts.googleapis.com/css2?family=${fontSpec(f)}&display=swap` + (text ? `&text=${encodeURIComponent(text)}` : "");
   return fontSheets[href] ||= new Promise(resolve => {
     const link = Object.assign(document.createElement("link"), { rel: "stylesheet", href });
     link.onload = link.onerror = () => resolve();
@@ -360,7 +274,7 @@ function syncBadge() {
 // ---------- Controls ----------
 function initControls() {
   const sel = $("font");
-  FONTS.forEach(([name]) => { const o = document.createElement("option"); o.value = name; o.textContent = name; sel.appendChild(o); });
+  FONTS.forEach(([name, kind]) => { const o = document.createElement("option"); o.value = name; o.textContent = name; o.dataset.kind = kind; sel.appendChild(o); });
   const bind = (id, key, fmt) => {
     const el = $(id);
     el.value = settings[key];
@@ -572,11 +486,27 @@ function enhanceSelect(sel, fontPreview) {
     li.className = "dd-search"; li.setAttribute("role", "presentation");
     search = Object.assign(document.createElement("input"), { type: "search", placeholder: "Search fonts", autocomplete: "off" });
     search.setAttribute("aria-label", "Search fonts");
-    search.addEventListener("input", () => {
-      const q = search.value.trim().toLowerCase();
-      items.forEach(li => { li.hidden = !!q && !li.dataset.value.toLowerCase().includes(q); });
-      setActive(0);
+    // Kind filters under the search box: All, Script, Serif and so on.
+    let kind = "";
+    const kinds = document.createElement("div");
+    kinds.className = "dd-kinds";
+    [["", "All"], ["script", "Script"], ["serif", "Serif"], ["sans-serif", "Sans serif"], ["display", "Display"], ["monospace", "Mono"]].forEach(([k, label]) => {
+      const b = Object.assign(document.createElement("button"), { type: "button", textContent: label });
+      b.setAttribute("aria-pressed", String(k === kind));
+      b.addEventListener("click", () => {
+        kind = k;
+        kinds.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+        filter();
+      });
+      kinds.appendChild(b);
     });
+    const filter = () => {
+      const q = search.value.trim().toLowerCase();
+      items.forEach(li => { li.hidden = (!!q && !li.dataset.value.toLowerCase().includes(q)) || (!!kind && li.dataset.kind !== kind); });
+      list.scrollTop = 0;
+      setActive(0);
+    };
+    search.addEventListener("input", filter);
     // Arrow keys, Enter and Escape work from the search box too.
     search.addEventListener("keydown", e => {
       if (!["ArrowDown", "ArrowUp", "Enter", "Escape"].includes(e.key)) return;
@@ -584,7 +514,7 @@ function enhanceSelect(sel, fontPreview) {
       btn.dispatchEvent(new KeyboardEvent("keydown", { key: e.key }));
       if (e.key === "Escape") btn.focus();
     });
-    li.appendChild(search); list.appendChild(li);
+    li.append(search, kinds); list.appendChild(li);
   }
   const preview = fontPreview && "IntersectionObserver" in window && new IntersectionObserver(entries => entries.forEach(en => {
     if (!en.isIntersecting) return;
@@ -595,6 +525,7 @@ function enhanceSelect(sel, fontPreview) {
   const items = [...sel.options].map(o => {
     const li = document.createElement("li");
     li.setAttribute("role", "option"); li.dataset.value = o.value; li.textContent = o.textContent;
+    if (o.dataset.kind) li.dataset.kind = o.dataset.kind;
     if (preview) preview.observe(li);
     li.addEventListener("click", () => choose(o.value));
     li.addEventListener("mousemove", () => setActive(shown().indexOf(li), false));
@@ -619,7 +550,7 @@ function enhanceSelect(sel, fontPreview) {
   function open() {
     list.hidden = false; btn.setAttribute("aria-expanded", "true");
     wrap.closest(".step")?.classList.add("has-open");
-    if (search) { search.value = ""; items.forEach(li => { li.hidden = false; }); }
+    if (search && search.value) { search.value = ""; search.dispatchEvent(new Event("input")); }
     setActive(Math.max(0, sel.selectedIndex));
     // Focus the search with a mouse; on phones that would pop up the keyboard.
     if (search && matchMedia("(pointer: fine)").matches) search.focus();
